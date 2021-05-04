@@ -1,8 +1,9 @@
 import brands from './brands.json';
 import { BrandInterface } from './interfaces/brand.interface';
 import { ProductInterface } from './interfaces/product.interface';
+import { StoreInterface } from './interfaces/store.interface';
 
-const { products } = brands.embedded;
+const { products, stores } = brands.embedded;
 
 // brand ID -> brand data
 export const brandIdMap: { [id: string]: BrandInterface } = brands.data.reduce(
@@ -77,6 +78,26 @@ export const productIdMap: { [id: string]: ProductInterface } = products.reduce(
       imessage_image,
       imessage_image_url,
       open_graph_image_url,
+    },
+  }),
+  {},
+);
+
+// store ID -> store data
+export const storeIdMap: { [id: string]: StoreInterface } = stores.reduce(
+  (
+    acc,
+    { id, brand_id, latitiude, longitude, name, description, image_url },
+  ) => ({
+    ...acc,
+    [id]: {
+      id,
+      brand_id,
+      latitiude,
+      longitude,
+      name,
+      description,
+      image_url,
     },
   }),
   {},

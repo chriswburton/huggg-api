@@ -56,4 +56,23 @@ describe('AppModule', () => {
         });
     });
   });
+
+  describe('GET brand/:brandId/stores', () => {
+    const brandStub = brands.data[0];
+
+    it(`should throw an exception if an invalid Brand ID is provided`, () => {
+      return request(app.getHttpServer())
+        .get(`/brand/INVALID_ID/stores`)
+        .expect(404);
+    });
+
+    it(`should return an array of Stores for the corresponding Brand ID`, () => {
+      return request(app.getHttpServer())
+        .get(`/brand/${brandStub.id}/stores`)
+        .expect(200)
+        .then((res) => {
+          expect(res.body.map(({ id }) => id)).toEqual(brandStub.stores);
+        });
+    });
+  });
 });
