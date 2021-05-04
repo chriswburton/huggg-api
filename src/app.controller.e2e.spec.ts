@@ -3,6 +3,7 @@ import { Test } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import { AppModule } from './app.module';
 import brands from './brands.json';
+import { StoreInterface } from './interfaces/store.interface';
 
 describe('AppModule', () => {
   let app: INestApplication;
@@ -72,6 +73,32 @@ describe('AppModule', () => {
         .expect(200)
         .then((res) => {
           expect(res.body.map(({ id }) => id)).toEqual(brandStub.stores);
+        });
+    });
+  });
+
+  describe('GET product/:productId/stores', () => {
+    const productStub = brands.embedded.products[0];
+    const productStores = brands.embedded.stores.filter(
+      ({ brand_id }: StoreInterface) => productStub.brand_id === brand_id,
+    );
+
+    it(`should throw an exception if an invalid Product ID is provided`, () => {
+      return request(app.getHttpServer())
+        .get(`/product/INVALID_ID/stores`)
+        .expect(404);
+    });
+
+    it(`should return the Stores that correspond to Product ID provided`, () => {
+      return request(app.getHttpServer())
+        .get(`/product/${productStub.id}/stores`)
+        .expect(200)
+        .then((res) => {
+          // ensure all IDs match, thereby confirming we have the right data
+          // TODO: improve test logic
+          expect(productStores.map(({ id }) => id)).toEqual(
+            res.body.map(({ id }) => id),
+          );
         });
     });
   });

@@ -102,3 +102,20 @@ export const storeIdMap: { [id: string]: StoreInterface } = stores.reduce(
   }),
   {},
 );
+
+// product id -> stores data
+export const productStoreMap: {
+  [productId: string]: StoreInterface[];
+} = brands.data.reduce((acc, brand) => {
+  const stores = [];
+  // we'll merge product + consolidated ids to give us all products available from a given brand
+  [...brand.products, ...brand.consolidated_products].forEach(
+    (productId: string) => {
+      // use our existing store map to populate each product id
+      stores[productId] = brand.stores.map(
+        (storeId: string) => storeIdMap[storeId],
+      );
+    },
+  );
+  return { ...acc, ...stores };
+}, {});

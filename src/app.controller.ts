@@ -1,6 +1,11 @@
 import { Controller, Get, NotFoundException, Param } from '@nestjs/common';
 import { BrandInterface } from './interfaces/brand.interface';
-import { brandIdMap, productIdMap, storeIdMap } from './data.mocks';
+import {
+  brandIdMap,
+  productIdMap,
+  productStoreMap,
+  storeIdMap,
+} from './data.mocks';
 import { ProductInterface } from './interfaces/product.interface';
 import { StoreInterface } from './interfaces/store.interface';
 
@@ -33,5 +38,13 @@ export class AppController {
     return brandIdMap[brandId].stores.map(
       (storeId: string) => storeIdMap[storeId],
     );
+  }
+
+  @Get('product/:productId/stores')
+  getStoresByProduct(@Param('productId') productId = ''): StoreInterface[] {
+    if (!productStoreMap[productId]) {
+      throw new NotFoundException('Product not found');
+    }
+    return productStoreMap[productId];
   }
 }
