@@ -1,12 +1,15 @@
-import { Controller, Get } from '@nestjs/common';
-import { AppService } from './app.service';
+import { Controller, Get, NotFoundException, Param } from '@nestjs/common';
+import { BrandInterface } from './interfaces/brand.interface';
+import { brandIdMap } from './data.mocks';
 
 @Controller()
 export class AppController {
-  constructor(private readonly appService: AppService) {}
-
-  @Get()
-  getHello(): string {
-    return this.appService.getHello();
+  @Get('brand/:brandId')
+  getBrandById(@Param('brandId') brandId = ''): BrandInterface {
+    // check brand exists
+    if (!brandIdMap[brandId]) {
+      throw new NotFoundException('Brand not found');
+    }
+    return brandIdMap[brandId];
   }
 }
